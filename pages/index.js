@@ -1,25 +1,43 @@
-import React,{ useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const [search, setSearch] = useState('');
+
+  useEffect(()=>{
+    async function fetchMovies() {
+      const res = await fetch('/api/movies');
+      const data = await res.json();
+      setMovies(data);
+    }
+    fetchMovies();
+  },[])
 
   const handleAddMovie = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const title = formData.get('title'); // Access the title
     const description = formData.get('description');
-    console.log(title,'title')
-    console.log(description,'description')
+    const res = await fetch('/api/movies', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title, description }),
+    });
+    const newMovie = await res.json();
+    setMovies([...movies, newMovie]);
     e.target.reset();
   };
 
   const handleDeleteMovie = async (id) => {
-    console.log(id,'id')
+    const res = await fetch(`/api/movies/${id}`, { method: 'DELETE' });
+    const data = await res.json()
+    setMovies(data);
   };
 
   const filteredMovies = movies.filter(el => el.title.toLowerCase().includes(search.toLowerCase()));
-
+  
   return (
     <div className="container">
       <h1>Movie Management Platform</h1>
@@ -27,6 +45,7 @@ export default function Home() {
         type="text"
         placeholder="Search movies"
         value={search}
+        onChange={(e) => setSearch(e.target.value)}
         className="search-input"
       />
 
@@ -35,11 +54,13 @@ export default function Home() {
           type="text"
           name="title" 
           placeholder="Title"
+          defaultValue=""
           required
         />
         <textarea
           name="description" 
           placeholder="Description"
+          defaultValue=""
           required
         />
         <button type="submit">Add Movie</button>
