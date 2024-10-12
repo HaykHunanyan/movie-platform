@@ -77,7 +77,6 @@ export default function Home() {
           </li>
         ))}
       </ul>
-
       <style jsx>{`
         .container {
           width: 600px;

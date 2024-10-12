@@ -1,4 +1,4 @@
-import { movies } from "../constants/movies"
+import { movies } from "../../lib/constants/movies.js"
 let movieList = [...movies]
 export const movieStore = {
     getMovies() {

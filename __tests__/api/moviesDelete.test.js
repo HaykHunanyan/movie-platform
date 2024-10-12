@@ -1,5 +1,5 @@
 import { createMocks } from 'node-mocks-http';
-import { movies } from '../../pages/constants/movies'
+import { movies } from '../../lib/constants/movies'
 import handlerForDelete from '../../pages/api/movies/[id]';
 
 let moviesList = [...movies];
